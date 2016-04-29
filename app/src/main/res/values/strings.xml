@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Robot.io</string>
+    <string name="action_settings">Settings</string>
 </resources>
