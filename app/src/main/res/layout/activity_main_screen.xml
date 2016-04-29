@@ -13,4 +13,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Hello World!" />
+
+
+    <com.jmedeisis.bugstick.Joystick
+        android:id="@+id/joystick"
+        android:layout_width="@dimen/base_size"
+        android:layout_height="@dimen/base_size"
+        android:background="@drawable/bg_base">
+
+        <!-- You may use any View here. -->
+        <Button
+            android:layout_width="@dimen/stick_size"
+            android:layout_height="@dimen/stick_size"
+            android:background="@drawable/bg_stick" />
+
+    </com.jmedeisis.bugstick.Joystick>
+
+
 </RelativeLayout>
