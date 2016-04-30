@@ -1,12 +1,8 @@
 package inc.ly.robot.robotio;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,20 +15,21 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
 
-import okhttp3.MediaType;
-
 public class MainActivity extends AppCompatActivity {
     float deg, off, xdir = 127, ydir = 127;
     int x, y;
     byte[] control = new byte[]{(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00};
     private Socket client;
+    private Joystick joystick;
+    boolean Connected = true;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
         final Button button = (Button) findViewById(R.id.stick);
-        Joystick joystick = (Joystick) findViewById(R.id.joystick);
+        joystick = (Joystick) findViewById(R.id.joystick);
         assert joystick != null;
         new MoveRobotTask().start();
 
@@ -96,6 +93,16 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    public void SetJoystickStatus(){
+        if(Connected){
+            joystick.setBackgroundDrawable(getResources().getDrawable(R.drawable.connected_circle));
+        }
+        else{
+            joystick.setBackgroundDrawable(getResources().getDrawable(R.drawable.center_circle));
+        }
+
+    }
     @Override
     protected void onDestroy() {
         try {
@@ -124,6 +131,9 @@ public class MainActivity extends AppCompatActivity {
             } catch(Exception e) {
                 e.printStackTrace();
             }
+
         }
     }
+
+
 }
