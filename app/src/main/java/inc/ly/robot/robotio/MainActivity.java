@@ -3,7 +3,6 @@ package inc.ly.robot.robotio;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -24,11 +23,14 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-   float degrees, offset;
+    float deg, off;
+    int x, y;
     public static final MediaType JSON
             = MediaType.parse("application/json; charset=utf-8");
 
-    public enum Command {FORWARD, BACK, LEFT, RIGHT};
+    public enum Command {FORWARD, BACK, LEFT, RIGHT}
+
+    ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,24 +42,27 @@ public class MainActivity extends AppCompatActivity {
         joystick.setJoystickListener(new JoystickListener() {
             @Override
             public void onDown() {
-                Log.d("JoyStickOP", "onDown: x = "+degrees+", y = "+offset);
+                Log.d("JoyStickOP", "onDown: x = " + deg + ", y = " + off);
             }
 
             @Override
-            public void onDrag(float deg, float off) {
-                degrees=deg;
-                offset=off;
-                int x = (int) Math.abs(0.5-offset);
+            public void onDrag(float degrees, float offset) {
+                deg = degrees;
+                off = offset;
+                x = (int) Math.abs(0.5 - off);
+                y = 0;
 
+                Log.d("JoyStickOP", "onDrag: x = " + x + ", y = " + y);
 
-                Log.d("JoyStickOP", "onDrag: x = "+degrees+", y = "+offset);
+                moveRobot(Command.FORWARD);
+
             }
 
             @Override
             public void onUp() {
-                Log.d("JoyStickOP", "onUp: x = "+degrees+", y = "+offset);
+                Log.d("JoyStickOP", "onUp: x = " + deg + ", y = " + off);
                 Log.d("JoyStickOP", "onUp: ");
-                moveRobot(Command.FORWARD);
+//                moveRobot(Command.FORWARD);
             }
         });
     }
@@ -86,12 +91,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void moveRobot(Command command){
+    public void moveRobot(Command command) {
 
         new MoveRobotTask().execute();
     }
 
-    public class MoveRobotTask extends AsyncTask<Void, Void, Void>{
+    public class MoveRobotTask extends AsyncTask<Void, Void, Void> {
         private final String LOG_TAG = MoveRobotTask.class.getSimpleName();
 
         @Override
@@ -109,10 +114,9 @@ public class MainActivity extends AppCompatActivity {
             } catch (IOException e) {
                 Log.d(LOG_TAG, "IOException occurred when executing http request");
             }
-
             return null;
         }
-    }
 
+    }
 
 }
