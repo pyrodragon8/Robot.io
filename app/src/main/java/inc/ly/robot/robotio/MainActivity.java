@@ -1,5 +1,4 @@
 package inc.ly.robot.robotio;
-
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,30 +8,37 @@ import com.jmedeisis.bugstick.JoystickListener;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
+
+    float degrees, offset;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
-
-
+        final Button button = (Button) findViewById(R.id.stick);
         Joystick joystick = (Joystick) findViewById(R.id.joystick);
+        assert joystick != null;
         joystick.setJoystickListener(new JoystickListener() {
             @Override
             public void onDown() {
-                Log.d("JoyStickOP", "onDown: ");
+                Log.d("JoyStickOP", "onDown: x = "+degrees+", y = "+offset);
             }
 
             @Override
-            public void onDrag(float degrees, float offset) {
-                Log.d("JoyStickOP", "onDrag: ");
+            public void onDrag(float deg, float off) {
+                degrees=deg;
+                offset=off;
+
+                Log.d("JoyStickOP", "onDrag: x = "+degrees+", y = "+offset);
             }
 
             @Override
             public void onUp() {
-                Log.d("JoyStickOP", "onUp: ");
+                Log.d("JoyStickOP", "onUp: x = "+degrees+", y = "+offset);
             }
         });
 

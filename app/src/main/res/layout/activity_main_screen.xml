@@ -20,13 +20,14 @@
         android:id="@+id/joystick"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimaryDark">
+        android:background="@drawable/center_circle">
 
         <!-- You may use any View here. -->
         <Button
+            android:id="@+id/stick"
             android:layout_width="@dimen/stick_size"
             android:layout_height="@dimen/stick_size"
-            android:background="@color/fuchsia" />
+            android:background="@color/purple" />
 
     </com.jmedeisis.bugstick.Joystick>
 
