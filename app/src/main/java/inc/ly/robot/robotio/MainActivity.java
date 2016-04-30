@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
                     y = (int)(offset * Math.sin((double)degrees));
                     x = (int)(offset * Math.cos((double)degrees));
                     x = x*-1;
-                    Log.d("JoystickOP", "Q2");
+                    Log.d("JoystickOP", "Q2dfadfasdfsadf");
                 } else if(degrees >= -90 && degrees < 0){
                     offset = offset * -1;
                     y = (int)(offset * Math.sin((double)degrees));
