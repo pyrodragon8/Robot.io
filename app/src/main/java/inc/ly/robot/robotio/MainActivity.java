@@ -21,10 +21,9 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final MediaType JSON
-            = MediaType.parse("application/json; charset=utf-8");
 
     public enum Command {FORWARD, BACK, LEFT, RIGHT};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,12 +40,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDrag(float degrees, float offset) {
                 Log.d("JoyStickOP", "onDrag: ");
+                moveRobot(Command.FORWARD);
             }
 
             @Override
             public void onUp() {
                 Log.d("JoyStickOP", "onUp: ");
-                moveRobot(Command.FORWARD);
+//                moveRobot(Command.FORWARD);
             }
         });
     }
@@ -80,28 +80,7 @@ public class MainActivity extends AppCompatActivity {
         new MoveRobotTask().execute();
     }
 
-    public class MoveRobotTask extends AsyncTask<Void, Void, Void>{
-        private final String LOG_TAG = MoveRobotTask.class.getSimpleName();
 
-        @Override
-        protected Void doInBackground(Void... voids) {
-            Log.d(LOG_TAG, "calling move robot");
-            RequestBody body = RequestBody.create(JSON, "{LEFT: 100, RIGHT: 100}");
-            OkHttpClient client = new OkHttpClient();
-            Request request = new Request.Builder()
-                    .url("http://10.140.126.90:8080/").post(body)
-                    .build();
-
-            try {
-                Response response = client.newCall(request).execute();
-                Log.d(LOG_TAG, "Respone returned :" + response.body());
-            } catch (IOException e) {
-                Log.d(LOG_TAG, "IOException occurred when executing http request");
-            }
-
-            return null;
-        }
-    }
 
 
 }
