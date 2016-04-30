@@ -30,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
 
     public enum Command {FORWARD, BACK, LEFT, RIGHT}
 
-    ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,27 +41,51 @@ public class MainActivity extends AppCompatActivity {
         joystick.setJoystickListener(new JoystickListener() {
             @Override
             public void onDown() {
-                Log.d("JoyStickOP", "onDown: x = " + deg + ", y = " + off);
+                //Log.d("JoyStickOP", "onDown: x = " + deg + ", y = " + off);
             }
 
             @Override
             public void onDrag(float degrees, float offset) {
-                deg = degrees;
-                off = offset;
-                x = (int) Math.abs(0.5 - off);
-                y = 0;
+                degrees = (float) ((Math.PI/180) * degrees);
+                offset = (int)(offset * 100);
+                Log.d("JoystickIn", "deg: " + degrees + " off: " + offset);
+                if(degrees <= 90 && degrees > 0){
+                    y = (int)(offset * Math.sin((double)degrees));
+                    x = (int)(offset * Math.cos((double)degrees));
+                    Log.d("JoystickOP", "Q1");
+                } else if(degrees <= 180 && degrees > 90){
+                    offset = 180 - offset;
+                    y = (int)(offset * Math.sin((double)degrees));
+                    x = (int)(offset * Math.cos((double)degrees));
+                    x = x*-1;
+                    Log.d("JoystickOP", "Q2");
+                } else if(degrees >= -90 && degrees < 0){
+                    offset = offset * -1;
+                    y = (int)(offset * Math.sin((double)degrees));
+                    x = (int)(offset * Math.cos((double)degrees));
+                    y = y*-1;
+                    x = x*-1;
+                    Log.d("JoystickOP", "Q3");
+                } else if(degrees >= -180 && degrees < -90){
+                    offset = offset * -1;
+                    offset = 180 - offset;
+                    y = (int)(offset * Math.sin((double)degrees));
+                    x = (int)(offset * Math.cos((double)degrees));
+                    x = x*-1;
+                    Log.d("JoystickOP", "Q4");
+                }
 
                 Log.d("JoyStickOP", "onDrag: x = " + x + ", y = " + y);
 
-                moveRobot(Command.FORWARD);
+                //moveRobot(Command.FORWARD);
 
             }
 
             @Override
             public void onUp() {
-                Log.d("JoyStickOP", "onUp: x = " + deg + ", y = " + off);
-                Log.d("JoyStickOP", "onUp: ");
-//                moveRobot(Command.FORWARD);
+                //Log.d("JoyStickOP", "onUp: x = " + deg + ", y = " + off);
+                //Log.d("JoyStickOP", "onUp: ");
+//              //  moveRobot(Command.FORWARD);
             }
         });
     }
