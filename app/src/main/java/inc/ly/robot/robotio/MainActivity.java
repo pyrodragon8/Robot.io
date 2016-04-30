@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
     public static final MediaType JSON
             = MediaType.parse("application/json; charset=utf-8");
 
-    public enum Command {UP, DOWN, LEFT, RIGHT};
+    public enum Command {FORWARD, BACK, LEFT, RIGHT};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onUp() {
                 Log.d("JoyStickOP", "onUp: ");
+                moveRobot(Command.FORWARD);
             }
         });
     }
@@ -75,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void moveRobot(Command command){
+        Log.d("MainActivity", "calling move robot");
         RequestBody body = RequestBody.create(JSON, "{LEFT: 100, RIGHT: 100}");
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
@@ -89,5 +91,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
 }
 
