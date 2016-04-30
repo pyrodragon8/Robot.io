@@ -1,4 +1,13 @@
 <resources>
     <string name="app_name">Robot.io</string>
     <string name="action_settings">Settings</string>
+
+    <!-- Default url for url preference [CHAR LIMIT=NONE] -->
+    <string name="pref_url_default" translatable="false">http://10.140.126.90:8080</string>
+
+    <!-- Label for the server url preference [CHAR LIMIT=30] -->
+    <string name="pref_url_label" translatable="false">Server URL</string>
+
+    <!-- Key name for url preference in SharedPreferences [CHAR LIMIT=NONE] -->
+    <string name="pref_url_key" translatable="false">url</string>
 </resources>
