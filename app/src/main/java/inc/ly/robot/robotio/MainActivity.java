@@ -47,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
             public void onDrag(float deg, float off) {
                 degrees=deg;
                 offset=off;
+                int x = (int) Math.abs(0.5-offset);
+
 
                 Log.d("JoyStickOP", "onDrag: x = "+degrees+", y = "+offset);
             }
@@ -85,20 +87,32 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void moveRobot(Command command){
-        Log.d("MainActivity", "calling move robot");
-        RequestBody body = RequestBody.create(JSON, "{LEFT: 100, RIGHT: 100}");
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                .url("http://10.140.126.90:8080/").post(body)
-                .build();
 
-        try {
-            Response response = client.newCall(request).execute();
-            Log.d("MainActivity", "Respone returned :" + response.body());
-        } catch (IOException e) {
-            Log.d("MainActivity", "IOException occurred when executing http request");
-        }
-
+        new MoveRobotTask().execute();
     }
+
+    public class MoveRobotTask extends AsyncTask<Void, Void, Void>{
+        private final String LOG_TAG = MoveRobotTask.class.getSimpleName();
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            Log.d(LOG_TAG, "calling move robot");
+            RequestBody body = RequestBody.create(JSON, "{LEFT: 100, RIGHT: 100}");
+            OkHttpClient client = new OkHttpClient();
+            Request request = new Request.Builder()
+                    .url("http://10.140.126.90:8080/").post(body)
+                    .build();
+
+            try {
+                Response response = client.newCall(request).execute();
+                Log.d(LOG_TAG, "Response returned :" + response.body());
+            } catch (IOException e) {
+                Log.d(LOG_TAG, "IOException occurred when executing http request");
+            }
+
+            return null;
+        }
+    }
+
 
 }
