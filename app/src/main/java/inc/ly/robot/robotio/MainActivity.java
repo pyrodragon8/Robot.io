@@ -1,5 +1,8 @@
 package inc.ly.robot.robotio;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.AsyncTask;
@@ -77,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.d("JoyStickOP", "onDrag: x = " + x + ", y = " + y);
 
-                //moveRobot(Command.FORWARD);
+                moveRobot(Command.FORWARD);
 
             }
 
@@ -107,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            startActivity(new Intent(this, SettingsActivity.class));
             return true;
         }
 
@@ -120,26 +124,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public class MoveRobotTask extends AsyncTask<Void, Void, Void> {
+
         private final String LOG_TAG = MoveRobotTask.class.getSimpleName();
 
         @Override
         protected Void doInBackground(Void... voids) {
-            Log.d(LOG_TAG, "calling move robot");
-            RequestBody body = RequestBody.create(JSON, "{LEFT: 100, RIGHT: 100}");
-            OkHttpClient client = new OkHttpClient();
-            Request request = new Request.Builder()
-                    .url("http://10.140.126.90:8080/").post(body)
-                    .build();
-
             try {
-                Response response = client.newCall(request).execute();
-                Log.d(LOG_TAG, "Response returned :" + response.body());
-            } catch (IOException e) {
-                Log.d(LOG_TAG, "IOException occurred when executing http request");
+                SharedPreferences sharedPref = MainActivity.this.getSharedPreferences("test", Context.MODE_PRIVATE);
+                String url = sharedPref.getString(getString(R.string.pref_url_key), getString(R.string.pref_url_default));
+//            String url = getResources().getString(R.string.pref_url_key);
+                Log.d(LOG_TAG, "url: " + url);
+
+
+                Log.d(LOG_TAG, "calling move robot");
+                RequestBody body = RequestBody.create(JSON, "{LEFT: 100, RIGHT: 100}");
+                OkHttpClient client = new OkHttpClient();
+                Request request = new Request.Builder()
+                        .url(url).post(body)
+                        .build();
+
+            } catch(Exception e){
+                Log.e(LOG_TAG, "Exception: " + e);
             }
+
             return null;
         }
-
     }
 
 }
