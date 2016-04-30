@@ -1,4 +1,8 @@
 package inc.ly.robot.robotio;
+
+import android.support.v7.app.AppCompatActivity;
+
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,10 +14,21 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 
+import java.io.IOException;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 public class MainActivity extends AppCompatActivity {
 
-    float degrees, offset;
+   float degrees, offset;
+    public static final MediaType JSON
+            = MediaType.parse("application/json; charset=utf-8");
 
+    public enum Command {FORWARD, BACK, LEFT, RIGHT};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,13 +54,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onUp() {
                 Log.d("JoyStickOP", "onUp: x = "+degrees+", y = "+offset);
+                Log.d("JoyStickOP", "onUp: ");
+                moveRobot(Command.FORWARD);
             }
         });
-
-
-
-
-
     }
 
 
@@ -71,5 +83,22 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-}
 
+    public void moveRobot(Command command){
+        Log.d("MainActivity", "calling move robot");
+        RequestBody body = RequestBody.create(JSON, "{LEFT: 100, RIGHT: 100}");
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url("http://10.140.126.90:8080/").post(body)
+                .build();
+
+        try {
+            Response response = client.newCall(request).execute();
+            Log.d("MainActivity", "Respone returned :" + response.body());
+        } catch (IOException e) {
+            Log.d("MainActivity", "IOException occurred when executing http request");
+        }
+
+    }
+
+}
