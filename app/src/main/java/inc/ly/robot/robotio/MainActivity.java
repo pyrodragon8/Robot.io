@@ -1,35 +1,26 @@
 package inc.ly.robot.robotio;
 
-import android.support.v7.app.AppCompatActivity;
-
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-
-import com.jmedeisis.bugstick.Joystick;
-import com.jmedeisis.bugstick.JoystickListener;
-
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 
+import com.jmedeisis.bugstick.Joystick;
+import com.jmedeisis.bugstick.JoystickListener;
+
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.Socket;
 
 import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
-
-    float deg, off;
+    float deg, off, xdir = 127, ydir = 127;
     int x, y;
-    public static final MediaType JSON
-            = MediaType.parse("application/json; charset=utf-8");
-
-    public enum Command {FORWARD, BACK, LEFT, RIGHT}
-
+    byte[] control = new byte[]{(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00};
+    private Socket client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +29,9 @@ public class MainActivity extends AppCompatActivity {
         final Button button = (Button) findViewById(R.id.stick);
         Joystick joystick = (Joystick) findViewById(R.id.joystick);
         assert joystick != null;
+        new MoveRobotTask().start();
+
+
         joystick.setJoystickListener(new JoystickListener() {
             @Override
             public void onDown() {
@@ -49,45 +43,28 @@ public class MainActivity extends AppCompatActivity {
                 degrees = (float) ((Math.PI/180) * degrees);
                 offset = (int)(offset * 100);
                 Log.d("JoystickIn", "deg: " + degrees + " off: " + offset);
-                if(degrees <= 90 && degrees > 0){
-                    y = (int)(offset * Math.sin((double)degrees));
-                    x = (int)(offset * Math.cos((double)degrees));
-                    Log.d("JoystickOP", "Q1");
-                } else if(degrees <= 180 && degrees > 90){
-                    offset = 180 - offset;
-                    y = (int)(offset * Math.sin((double)degrees));
-                    x = (int)(offset * Math.cos((double)degrees));
-                    x = x*-1;
-                    Log.d("JoystickOP", "Q2");
-                } else if(degrees >= -90 && degrees < 0){
-                    offset = offset * -1;
-                    y = (int)(offset * Math.sin((double)degrees));
-                    x = (int)(offset * Math.cos((double)degrees));
-                    y = y*-1;
-                    x = x*-1;
-                    Log.d("JoystickOP", "Q3");
-                } else if(degrees >= -180 && degrees < -90){
-                    offset = offset * -1;
-                    offset = 180 - offset;
-                    y = (int)(offset * Math.sin((double)degrees));
-                    x = (int)(offset * Math.cos((double)degrees));
-                    x = x*-1;
-                    Log.d("JoystickOP", "Q4");
-                }
+                y = (int)(offset * Math.sin((double)degrees));
+                x = (int)(offset * Math.cos((double)degrees));
+
+                xdir = (int)((x/100.0)*127);
+                ydir = (int)((y/100.0)*127);
+                xdir += 128;
+                ydir += 128;
 
                 Log.d("JoyStickOP", "onDrag: x = " + x + ", y = " + y);
-
-                //moveRobot(Command.FORWARD);
+                Log.d("JoyStickOP", "onDrag: xdir = " + xdir + ", ydir = " + ydir);
 
             }
 
             @Override
             public void onUp() {
-                //Log.d("JoyStickOP", "onUp: x = " + deg + ", y = " + off);
-                //Log.d("JoyStickOP", "onUp: ");
-//              //  moveRobot(Command.FORWARD);
+                xdir = 127;
+                ydir = 127;
+                Log.d("JoyStickOP", "onUp: x = " + x + ", y = " + y);
             }
         });
+
+
     }
 
 
@@ -113,33 +90,35 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-    public void moveRobot(Command command) {
-
-        new MoveRobotTask().execute();
+    @Override
+    protected void onDestroy() {
+        try {
+            client.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        super.onDestroy();
     }
 
-    public class MoveRobotTask extends AsyncTask<Void, Void, Void> {
+    public class MoveRobotTask extends Thread {
         private final String LOG_TAG = MoveRobotTask.class.getSimpleName();
 
         @Override
-        protected Void doInBackground(Void... voids) {
-            Log.d(LOG_TAG, "calling move robot");
-            RequestBody body = RequestBody.create(JSON, "{LEFT: 100, RIGHT: 100}");
-            OkHttpClient client = new OkHttpClient();
-            Request request = new Request.Builder()
-                    .url("http://10.140.126.90:8080/").post(body)
-                    .build();
-
+        public void run() {
             try {
-                Response response = client.newCall(request).execute();
-                Log.d(LOG_TAG, "Response returned :" + response.body());
-            } catch (IOException e) {
-                Log.d(LOG_TAG, "IOException occurred when executing http request");
+                client = new Socket("10.140.148.37", 1100);
+                while (client != null && client.isConnected()) {
+                    control[4] = (byte) 0x01;
+                    control[2] = (byte) xdir;
+                    control[3] = (byte) ydir;
+                    OutputStream output;
+                    output = (client.getOutputStream());
+                    output.write(control);
+                    Thread.sleep(10);
+                }
+            } catch(Exception e) {
+                e.printStackTrace();
             }
-            return null;
         }
-
     }
-
 }
