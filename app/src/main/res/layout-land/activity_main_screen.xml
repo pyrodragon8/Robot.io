@@ -35,7 +35,7 @@
             android:layout_gravity="bottom"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:background="@drawable/center_circle"/>
+            android:background="@drawable/center_stick"/>
 
     </com.jmedeisis.bugstick.Joystick>
 
