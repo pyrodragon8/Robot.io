@@ -26,8 +26,8 @@ import java.net.Socket;
 import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
-    float deg, off, xdir = 127, ydir = 127;
-    int x, y, port = 1110;
+    float deg, off, xdir = 127, ydir = 127, xrot = 127;
+    int x, y, port = 1110, rot;
     byte[] control = new byte[]{(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00};
     private Socket client;
     private Joystick joystick, joyLeft, joyRight;
@@ -158,12 +158,13 @@ public class MainActivity extends AppCompatActivity {
                 degrees = (float) ((Math.PI/180) * degrees);
                 offset = (int)(offset * 100);
                 Log.d("JoystickIn", "deg: " + degrees + " off: " + offset);
+
                 y = (int)(offset * Math.sin((double)degrees));
                 x = 0;
 
-                xdir = (int)((x/100.0)*127);
+//                xdir = (int)((x/100.0)*127);
                 ydir = (int)((y/100.0)*127);
-                xdir += 128;
+//                xdir += 128;
                 ydir += 128;
 
                 Log.d("JoyStickOP", Connected+"onDrag: x = " + x + ", y = " + y);
@@ -185,31 +186,25 @@ public class MainActivity extends AppCompatActivity {
         joyRight.setJoystickListener(new JoystickListener() {
             @Override
             public void onDown() {
-                //Log.d("JoyStickOP", "onDown: x = " + deg + ", y = " + off);
+
             }
 
             @Override
             public void onDrag(float degrees, float offset) {
                 degrees = (float) ((Math.PI/180) * degrees);
                 offset = (int)(offset * 100);
-                Log.d("JoystickIn", "deg: " + degrees + " off: " + offset);
-                y = 0;
-                x = (int)(offset * Math.cos((double)degrees));
+                rot = (int)(offset * Math.cos((double)degrees));
 
-                xdir = (int)((x/100.0)*127);
-                ydir = (int)((y/100.0)*127);
-                xdir += 128;
-                ydir += 128;
+                xrot = (int)((x/100.0)*127);
+                xrot += 128;
 
-                Log.d("JoyStickOP", Connected+"onDrag: x = " + x + ", y = " + y);
-                Log.d("JoyStickOP", Connected+"onDrag: xdir = " + xdir + ", ydir = " + ydir);
+                Log.d("JoystickRL", "deg: " + degrees + " off: " + offset);
 
             }
 
             @Override
             public void onUp() {
-                xdir = 127;
-                ydir = 127;
+
                 Log.d("JoyStickOP", Connected+"onUp: x = " + x + ", y = " + y);
             }
         });
@@ -290,6 +285,7 @@ public class MainActivity extends AppCompatActivity {
                 output = (client.getOutputStream());
                 Connected = true;
                 while (client != null && client.isConnected()) {
+                    control[0] = (byte) xrot;
                     control[4] = (byte) 0x01;
                     control[2] = (byte) xdir;
                     control[3] = (byte) ydir;
