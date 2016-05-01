@@ -9,7 +9,7 @@ Designed primarily for demonstrating to students in [ENGR301](http://www.victori
 and motivating them in electronics and programming.   
 
 #Features
-Robotly is an app that can connect to a robot via http or sockets and control it (SO MUCH NETWORKING WAS INVOLVED!!!). We also had to configure the robot to accept the app's request.    
-Additionally our app displays a full screen live video stream of camera connected to raspberry pi mounted on top of the robot.    
+Robot.io is an app that can connect to a robot via http or sockets and control it (SO MUCH NETWORKING WAS INVOLVED!!!). We also had to configure the robot to accept the app's request.    
+Our app is capable of displaying a full screen live video stream of camera connected to raspberry pi that can be mounted on top of the robot.    
 
 Here is a [test video](https://www.youtube.com/watch?v=OfxAfsd5Tiw&list=WL&index=39) of our app controlling Victoria University's NIARC Robot 
