@@ -1,7 +1,7 @@
 package inc.ly.robot.robotio;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 
@@ -16,12 +16,12 @@ import android.widget.ImageView;
 
 import com.jmedeisis.bugstick.Joystick;
 import com.jmedeisis.bugstick.JoystickListener;
-import com.koushikdutta.ion.Ion;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.Set;
+import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
     float deg, off, xdir = 127, ydir = 127;
@@ -32,21 +32,40 @@ public class MainActivity extends AppCompatActivity {
     boolean Connected = false;
     private ImageView imageView;
     private Handler handler = new Handler();
-    Runnable runnable = new Runnable() {
+    Thread imageLoader = new Thread() {
         @Override
         public void run() {
-            Ion.with(imageView).load("http://10.140.126.90:8080/image");
-            handler.postDelayed(runnable, 3000);
-            Log.d("MainActivity", "Loading image");
+            while(!isInterrupted()) {
+                final Drawable image = loadImageFromWebOperations("http://10.140.126.90:8080/image");
+                Log.d("MainActivity", "Loading image");
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        imageView.setImageDrawable(image);
+                    }
+                });
+            }
         }
     };
 
+
+    public static Drawable loadImageFromWebOperations(String url) {
+        try {
+            InputStream is = (InputStream) new URL(url).getContent();
+            Drawable d = Drawable.createFromStream(is, "src name");
+            return d;
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
 
         super.onCreate(savedInstanceState);
+
+
 
         if(getResources().getConfiguration().orientation== Configuration.ORIENTATION_LANDSCAPE) {
             requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -56,7 +75,9 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main_screen);
         imageView = (ImageView) findViewById(R.id.camera_image);
-        handler.post(runnable);
+        imageLoader.start();
+
+
         final Button button = (Button) findViewById(R.id.stick);
         joystick = (Joystick) findViewById(R.id.joystick);
         assert joystick != null;
@@ -138,6 +159,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         try {
             client.close();
+            imageLoader.interrupt();
         } catch (IOException e) {
             e.printStackTrace();
         }
