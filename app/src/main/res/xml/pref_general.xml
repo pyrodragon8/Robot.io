@@ -10,6 +10,13 @@
         android:inputType="text"
         android:singleLine="true" />
 
+    <EditTextPreference
+        android:title="@string/pref_port_label"
+        android:key="@string/pref_port_key"
+        android:defaultValue="@string/pref_port_default"
+        android:inputType="text"
+        android:singleLine="true" />
+
 </PreferenceScreen>
 
 

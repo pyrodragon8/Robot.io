@@ -3,11 +3,20 @@
     <string name="action_settings">Settings</string>
 
     <!-- Default url for url preference [CHAR LIMIT=NONE] -->
-    <string name="pref_url_default" translatable="false">http://10.140.126.90:8080</string>
+    <string name="pref_url_default" translatable="false">192.168.1.4</string>
 
     <!-- Label for the server url preference [CHAR LIMIT=30] -->
-    <string name="pref_url_label" translatable="false">Server URL</string>
+    <string name="pref_url_label" translatable="false">Robot IP Address</string>
+
+    <!-- Default port for port preference [CHAR LIMIT=NONE] -->
+    <string name="pref_port_default" translatable="false">8011</string>
+
+    <!-- Label for the server url preference [CHAR LIMIT=30] -->
+    <string name="pref_port_label" translatable="false">Robot Port</string>
 
     <!-- Key name for url preference in SharedPreferences [CHAR LIMIT=NONE] -->
-    <string name="pref_url_key" translatable="false">url</string>
+    <string name="pref_url_key" translatable="false">ip</string>
+
+    <!-- Key name for url preference in SharedPreferences [CHAR LIMIT=NONE] -->
+    <string name="pref_port_key" translatable="false">port</string>
 </resources>

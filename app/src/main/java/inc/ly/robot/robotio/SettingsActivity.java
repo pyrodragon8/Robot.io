@@ -31,6 +31,7 @@ public class SettingsActivity extends PreferenceActivity
         super.onResume();
 
         bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_url_key)));
+        bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_port_key)));
     }
 
     /**
@@ -55,8 +56,13 @@ public class SettingsActivity extends PreferenceActivity
         String stringValue = value.toString();
 
         SharedPreferences prefs = getSharedPreferences("test", MODE_PRIVATE);
-
-        prefs.edit().putString(getString(R.string.pref_url_key), stringValue).commit();
+        String s = preference.getKey();
+        if(s.equals(getString(R.string.pref_url_key))) {
+            prefs.edit().putString(getString(R.string.pref_url_key), stringValue).apply();
+        }
+        if(s.equals(getString(R.string.pref_port_key))) {
+            prefs.edit().putString(getString(R.string.pref_port_key), stringValue).apply();
+        }
         Log.d("SettingsActivity", "Updated url value: " + stringValue);
 
         if (preference instanceof ListPreference) {

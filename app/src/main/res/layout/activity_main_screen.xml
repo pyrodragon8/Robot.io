@@ -18,8 +18,6 @@
 
     <com.jmedeisis.bugstick.Joystick
         android:id="@+id/joystick"
-
-
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:background="@drawable/center_circle"
@@ -35,5 +33,7 @@
             android:background="@drawable/center_stick"/>
 
     </com.jmedeisis.bugstick.Joystick>
+
+
 
 </android.support.percent.PercentRelativeLayout>
