@@ -156,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
                 degrees = (float) ((Math.PI/180) * degrees);
                 offset = (int)(offset * 100);
                 Log.d("JoystickIn", "deg: " + degrees + " off: " + offset);
+
                 y = (int)(offset * Math.sin((double)degrees));
                 x = 0;
 
