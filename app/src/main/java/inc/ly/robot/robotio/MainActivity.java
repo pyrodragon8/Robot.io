@@ -1,19 +1,27 @@
 package inc.ly.robot.robotio;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.graphics.drawable.GradientDrawable;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.jmedeisis.bugstick.Joystick;
 import com.jmedeisis.bugstick.JoystickListener;
+import com.koushikdutta.ion.Ion;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
     float deg, off, xdir = 127, ydir = 127;
@@ -21,17 +29,39 @@ public class MainActivity extends AppCompatActivity {
     byte[] control = new byte[]{(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00};
     private Socket client;
     private Joystick joystick;
-    boolean Connected = true;
+    boolean Connected = false;
+    private ImageView imageView;
+    private Handler handler = new Handler();
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            Ion.with(imageView).load("http://10.140.126.90:8080/image");
+            handler.postDelayed(runnable, 1500);
+            Log.d("MainActivity", "Loading image");
+        }
+    };
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
+
+        if(getResources().getConfiguration().orientation== Configuration.ORIENTATION_LANDSCAPE) {
+            requestWindowFeature(Window.FEATURE_NO_TITLE);
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            getSupportActionBar().hide();
+        }
+
         setContentView(R.layout.activity_main_screen);
+        imageView = (ImageView) findViewById(R.id.camera_image);
+        handler.post(runnable);
         final Button button = (Button) findViewById(R.id.stick);
         joystick = (Joystick) findViewById(R.id.joystick);
         assert joystick != null;
         new MoveRobotTask().start();
+
 
 
         joystick.setJoystickListener(new JoystickListener() {
@@ -53,8 +83,8 @@ public class MainActivity extends AppCompatActivity {
                 xdir += 128;
                 ydir += 128;
 
-                Log.d("JoyStickOP", "onDrag: x = " + x + ", y = " + y);
-                Log.d("JoyStickOP", "onDrag: xdir = " + xdir + ", ydir = " + ydir);
+                Log.d("JoyStickOP", Connected+"onDrag: x = " + x + ", y = " + y);
+                Log.d("JoyStickOP", Connected+"onDrag: xdir = " + xdir + ", ydir = " + ydir);
 
             }
 
@@ -62,10 +92,11 @@ public class MainActivity extends AppCompatActivity {
             public void onUp() {
                 xdir = 127;
                 ydir = 127;
-                Log.d("JoyStickOP", "onUp: x = " + x + ", y = " + y);
+                Log.d("JoyStickOP", Connected+"onUp: x = " + x + ", y = " + y);
             }
         });
 
+    SetJoystickStatus();
 
     }
 
@@ -127,10 +158,19 @@ public class MainActivity extends AppCompatActivity {
                     output = (client.getOutputStream());
                     output.write(control);
                     Thread.sleep(10);
+                    Connected = true;
+
                 }
             } catch(Exception e) {
                 e.printStackTrace();
+                Connected = false;
             }
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    SetJoystickStatus();
+                }
+            });
 
         }
     }

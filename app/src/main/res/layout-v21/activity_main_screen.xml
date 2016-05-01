@@ -13,6 +13,10 @@
     android:background="#f28888"
     android:backgroundTintMode="screen">
 
+    <ImageView
+        android:id="@+id/camera_image"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
 
     <com.jmedeisis.bugstick.Joystick
         android:id="@+id/joystick"
