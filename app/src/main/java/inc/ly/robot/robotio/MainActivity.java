@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     boolean Connected = false;
     private ImageView imageView;
     private Handler handler = new Handler();
+    Thread t;
     Thread imageLoader = new Thread() {
         @Override
         public void run() {
@@ -69,7 +70,8 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
-
+        t = new MoveRobotTask();
+        t.start();
 
         if(getResources().getConfiguration().orientation== Configuration.ORIENTATION_LANDSCAPE) {
             requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -101,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
             joystick = (Joystick) findViewById(R.id.joystick);
 
             assert joystick != null;
-            new MoveRobotTask().start();
+
 
             setPortraitJoystickListener();
         }
@@ -271,7 +273,19 @@ public class MainActivity extends AppCompatActivity {
                 port = Integer.parseInt(sharedPref.getString(getString(R.string.pref_port_key), getString(R.string.pref_port_default)).trim());
                 ipAddress = sharedPref.getString(getString(R.string.pref_url_key), getString(R.string.pref_url_default)).trim();
                 client = new Socket(ipAddress, port);
-                if(client.isConnected()) Connected = true;
+                if(client.isConnected()) {
+                    Connected = true;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(getResources().getConfiguration().orientation== Configuration.ORIENTATION_LANDSCAPE) {
+                                SetJoystickStatus(joyLeft);
+                                SetJoystickStatus(joyRight);
+                            }
+                            else {SetJoystickStatus(joystick);}
+                        }
+                    });
+                }
                 OutputStream output;
                 output = (client.getOutputStream());
                 Connected = true;
@@ -286,18 +300,12 @@ public class MainActivity extends AppCompatActivity {
             } catch(Exception e) {
                 e.printStackTrace();
             }
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if(getResources().getConfiguration().orientation== Configuration.ORIENTATION_LANDSCAPE) {
-                        SetJoystickStatus(joyLeft);
-                        SetJoystickStatus(joyRight);
-                    }
-                    else {SetJoystickStatus(joystick);}
-                }
-            });
 
         }
+
+
+
+
     }
 
 
