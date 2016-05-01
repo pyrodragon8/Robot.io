@@ -24,9 +24,11 @@
 
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
         android:background="@drawable/center_circle"
         android:layout_height="150dp"
-        android:layout_width="150dp">
+        android:layout_width="150dp"
+        app:motion_constraint="Vertical">
 
         <!-- You may use any View here. -->
         <Button
@@ -42,11 +44,12 @@
         android:id="@+id/joystickright"
 
 
-        android:layout_alignBaseline=""
+        android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:background="@drawable/center_circle"
         android:layout_height="150dp"
-        android:layout_width="150dp">
+        android:layout_width="150dp"
+        app:motion_constraint="Horizontal">
 
         <!-- You may use any View here. -->
         <Button
