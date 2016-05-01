@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity"
     style="@android:style/Animation.Toast"
-    android:background="#f28888"
+    android:background="@color/colorAccent"
     android:backgroundTintMode="screen">
 
     <ImageView
