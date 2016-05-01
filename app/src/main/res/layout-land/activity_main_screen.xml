@@ -27,8 +27,7 @@
         android:layout_alignParentLeft="true"
         android:background="@drawable/center_circle"
         android:layout_height="150dp"
-        android:layout_width="150dp"
-        app:motion_constraint="Vertical">
+        android:layout_width="150dp">
 
         <!-- You may use any View here. -->
         <Button
