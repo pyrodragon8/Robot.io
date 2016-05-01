@@ -76,7 +76,6 @@ public class SettingsActivity extends PreferenceActivity
         } else {
             // For other preferences, set the summary to the value's simple string representation.
             preference.setSummary(stringValue);
-//            preferenc
         }
         return true;
     }

@@ -1,5 +1,7 @@
 package inc.ly.robot.robotio;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
@@ -25,10 +27,11 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
     float deg, off, xdir = 127, ydir = 127;
-    int x, y;
+    int x, y, port = 1110;
     byte[] control = new byte[]{(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00};
     private Socket client;
     private Joystick joystick, joyLeft, joyRight;
+    String ipAddress = "";
     Button button, buttonL, buttonR;
     boolean Connected = false;
     private ImageView imageView;
@@ -264,21 +267,24 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void run() {
             try {
-                client = new Socket("10.140.148.37", 1100);
+                SharedPreferences sharedPref = MainActivity.this.getSharedPreferences("test", Context.MODE_PRIVATE);
+                port = Integer.parseInt(sharedPref.getString(getString(R.string.pref_port_key), getString(R.string.pref_port_default)).trim());
+                ipAddress = sharedPref.getString(getString(R.string.pref_url_key), getString(R.string.pref_url_default)).trim();
+                client = new Socket(ipAddress, port);
+                if(client.isConnected()) Connected = true;
+                OutputStream output;
+                output = (client.getOutputStream());
+                Connected = true;
                 while (client != null && client.isConnected()) {
                     control[4] = (byte) 0x01;
                     control[2] = (byte) xdir;
                     control[3] = (byte) ydir;
-                    OutputStream output;
-                    output = (client.getOutputStream());
                     output.write(control);
                     Thread.sleep(10);
-                    Connected = true;
-
                 }
+                Connected = false;
             } catch(Exception e) {
                 e.printStackTrace();
-                Connected = false;
             }
             runOnUiThread(new Runnable() {
                 @Override
