@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void run() {
             Ion.with(imageView).load("http://10.140.126.90:8080/image");
-            handler.postDelayed(runnable, 1500);
+            handler.postDelayed(runnable, 3000);
             Log.d("MainActivity", "Loading image");
         }
     };
