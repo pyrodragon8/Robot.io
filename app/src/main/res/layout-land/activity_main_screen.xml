@@ -19,7 +19,7 @@
         android:adjustViewBounds="true" />
 
     <com.jmedeisis.bugstick.Joystick
-        android:id="@+id/joystick"
+        android:id="@+id/joystickleft"
 
 
         android:layout_centerHorizontal="true"
@@ -30,7 +30,27 @@
 
         <!-- You may use any View here. -->
         <Button
-            android:id="@+id/stick"
+            android:id="@+id/stickleft"
+            android:layout_gravity="bottom"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/center_circle"/>
+
+    </com.jmedeisis.bugstick.Joystick>
+
+    <com.jmedeisis.bugstick.Joystick
+        android:id="@+id/joystickright"
+
+
+        android:layout_alignBaseline=""
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/center_circle"
+        android:layout_height="150dp"
+        android:layout_width="150dp">
+
+        <!-- You may use any View here. -->
+        <Button
+            android:id="@+id/stickright"
             android:layout_gravity="bottom"
             android:layout_width="30dp"
             android:layout_height="30dp"
