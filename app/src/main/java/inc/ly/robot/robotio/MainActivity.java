@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
                 offset = (int)(offset * 100);
                 Log.d("JoystickIn", "deg: " + degrees + " off: " + offset);
                 y = (int)(offset * Math.sin((double)degrees));
-                x = (int)(offset * Math.cos((double)degrees));
+                x = 0;
 
                 xdir = (int)((x/100.0)*127);
                 ydir = (int)((y/100.0)*127);
@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
                 degrees = (float) ((Math.PI/180) * degrees);
                 offset = (int)(offset * 100);
                 Log.d("JoystickIn", "deg: " + degrees + " off: " + offset);
-                y = (int)(offset * Math.sin((double)degrees));
+                y = 0;
                 x = (int)(offset * Math.cos((double)degrees));
 
                 xdir = (int)((x/100.0)*127);
