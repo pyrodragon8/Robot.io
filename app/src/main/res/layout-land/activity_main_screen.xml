@@ -10,8 +10,13 @@
 
     <ImageView
         android:id="@+id/camera_image"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="0dp"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
+        android:layout_height="fill_parent"
+        android:scaleType="fitXY"
+        android:adjustViewBounds="true" />
 
     <com.jmedeisis.bugstick.Joystick
         android:id="@+id/joystickleft"
@@ -19,9 +24,11 @@
 
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
         android:background="@drawable/center_circle"
         android:layout_height="150dp"
-        android:layout_width="150dp">
+        android:layout_width="150dp"
+        app:motion_constraint="Vertical">
 
         <!-- You may use any View here. -->
         <Button
@@ -37,11 +44,12 @@
         android:id="@+id/joystickright"
 
 
-        android:layout_alignBaseline=""
+        android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:background="@drawable/center_circle"
         android:layout_height="150dp"
-        android:layout_width="150dp">
+        android:layout_width="150dp"
+        app:motion_constraint="Horizontal">
 
         <!-- You may use any View here. -->
         <Button
@@ -49,7 +57,7 @@
             android:layout_gravity="bottom"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:background="@drawable/center_circle"/>
+            android:background="@drawable/center_stick"/>
 
     </com.jmedeisis.bugstick.Joystick>
 

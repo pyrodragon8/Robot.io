@@ -28,7 +28,8 @@ public class MainActivity extends AppCompatActivity {
     int x, y;
     byte[] control = new byte[]{(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00};
     private Socket client;
-    private Joystick joystick;
+    private Joystick joystick, joyLeft, joyRight;
+    Button button, buttonL, buttonR;
     boolean Connected = false;
     private ImageView imageView;
     private Handler handler = new Handler();
@@ -78,13 +79,34 @@ public class MainActivity extends AppCompatActivity {
         imageLoader.start();
 
 
-        final Button button = (Button) findViewById(R.id.stick);
-        joystick = (Joystick) findViewById(R.id.joystick);
-        assert joystick != null;
-        new MoveRobotTask().start();
+
+        if(getResources().getConfiguration().orientation== Configuration.ORIENTATION_LANDSCAPE) {
+
+            buttonL = (Button) findViewById(R.id.stickleft);
+            buttonR = (Button) findViewById(R.id.stickright);
+            joyLeft = (Joystick) findViewById(R.id.joystickleft);
+            joyRight = (Joystick) findViewById(R.id.joystickright);
+            assert joyLeft != null;
+            assert joyRight != null;
+            new MoveRobotTask().start();
+
+            setLandscapeJoystickListenerL();
+            setLandscapeJoystickListenerR();
+        }
+        else{
+            button = (Button) findViewById(R.id.stick);
+            joystick = (Joystick) findViewById(R.id.joystick);
+
+            assert joystick != null;
+            new MoveRobotTask().start();
+
+            setPortraitJoystickListener();
+        }
+    }
 
 
 
+    public void setPortraitJoystickListener(){
         joystick.setJoystickListener(new JoystickListener() {
             @Override
             public void onDown() {
@@ -117,8 +139,77 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-    SetJoystickStatus();
+        SetJoystickStatus(joystick);
+    }
+    public void setLandscapeJoystickListenerL(){
+        joyLeft.setJoystickListener(new JoystickListener() {
+            @Override
+            public void onDown() {
+                //Log.d("JoyStickOP", "onDown: x = " + deg + ", y = " + off);
+            }
 
+            @Override
+            public void onDrag(float degrees, float offset) {
+                degrees = (float) ((Math.PI/180) * degrees);
+                offset = (int)(offset * 100);
+                Log.d("JoystickIn", "deg: " + degrees + " off: " + offset);
+                y = (int)(offset * Math.sin((double)degrees));
+                x = (int)(offset * Math.cos((double)degrees));
+
+                xdir = (int)((x/100.0)*127);
+                ydir = (int)((y/100.0)*127);
+                xdir += 128;
+                ydir += 128;
+
+                Log.d("JoyStickOP", Connected+"onDrag: x = " + x + ", y = " + y);
+                Log.d("JoyStickOP", Connected+"onDrag: xdir = " + xdir + ", ydir = " + ydir);
+
+            }
+
+            @Override
+            public void onUp() {
+                xdir = 127;
+                ydir = 127;
+                Log.d("JoyStickOP", Connected+"onUp: x = " + x + ", y = " + y);
+            }
+        });
+
+        SetJoystickStatus(joyLeft);
+    }
+    public void setLandscapeJoystickListenerR(){
+        joyRight.setJoystickListener(new JoystickListener() {
+            @Override
+            public void onDown() {
+                //Log.d("JoyStickOP", "onDown: x = " + deg + ", y = " + off);
+            }
+
+            @Override
+            public void onDrag(float degrees, float offset) {
+                degrees = (float) ((Math.PI/180) * degrees);
+                offset = (int)(offset * 100);
+                Log.d("JoystickIn", "deg: " + degrees + " off: " + offset);
+                y = (int)(offset * Math.sin((double)degrees));
+                x = (int)(offset * Math.cos((double)degrees));
+
+                xdir = (int)((x/100.0)*127);
+                ydir = (int)((y/100.0)*127);
+                xdir += 128;
+                ydir += 128;
+
+                Log.d("JoyStickOP", Connected+"onDrag: x = " + x + ", y = " + y);
+                Log.d("JoyStickOP", Connected+"onDrag: xdir = " + xdir + ", ydir = " + ydir);
+
+            }
+
+            @Override
+            public void onUp() {
+                xdir = 127;
+                ydir = 127;
+                Log.d("JoyStickOP", Connected+"onUp: x = " + x + ", y = " + y);
+            }
+        });
+
+        SetJoystickStatus(joyRight);
     }
 
 
@@ -146,20 +237,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void SetJoystickStatus(){
+    public void SetJoystickStatus(Joystick joy){
         if(Connected){
-            joystick.setBackgroundDrawable(getResources().getDrawable(R.drawable.connected_circle));
+            joy.setBackgroundDrawable(getResources().getDrawable(R.drawable.connected_circle));
         }
         else{
-            joystick.setBackgroundDrawable(getResources().getDrawable(R.drawable.center_circle));
+            joy.setBackgroundDrawable(getResources().getDrawable(R.drawable.center_circle));
         }
 
     }
     @Override
     protected void onDestroy() {
         try {
-            client.close();
-            imageLoader.interrupt();
+            if(client!=null) {
+                client.close();
+                imageLoader.interrupt();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -190,7 +283,11 @@ public class MainActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    SetJoystickStatus();
+                    if(getResources().getConfiguration().orientation== Configuration.ORIENTATION_LANDSCAPE) {
+                        SetJoystickStatus(joyLeft);
+                        SetJoystickStatus(joyRight);
+                    }
+                    else {SetJoystickStatus(joystick);}
                 }
             });
 
