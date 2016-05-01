@@ -158,12 +158,13 @@ public class MainActivity extends AppCompatActivity {
                 degrees = (float) ((Math.PI/180) * degrees);
                 offset = (int)(offset * 100);
                 Log.d("JoystickIn", "deg: " + degrees + " off: " + offset);
+
                 y = (int)(offset * Math.sin((double)degrees));
                 x = 0;
 
-                xdir = (int)((x/100.0)*127);
+//                xdir = (int)((x/100.0)*127);
                 ydir = (int)((y/100.0)*127);
-                xdir += 128;
+//                xdir += 128;
                 ydir += 128;
 
                 Log.d("JoyStickOP", Connected+"onDrag: x = " + x + ", y = " + y);
@@ -197,9 +198,9 @@ public class MainActivity extends AppCompatActivity {
                 x = (int)(offset * Math.cos((double)degrees));
 
                 xdir = (int)((x/100.0)*127);
-                ydir = (int)((y/100.0)*127);
+//                ydir = (int)((y/100.0)*127);
                 xdir += 128;
-                ydir += 128;
+//                ydir += 128;
 
                 Log.d("JoyStickOP", Connected+"onDrag: x = " + x + ", y = " + y);
                 Log.d("JoyStickOP", Connected+"onDrag: xdir = " + xdir + ", ydir = " + ydir);
