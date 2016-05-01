@@ -162,9 +162,9 @@ public class MainActivity extends AppCompatActivity {
                 y = (int)(offset * Math.sin((double)degrees));
                 x = (int)(offset * Math.cos((double)degrees));
 
-//                xdir = (int)((x/100.0)*127);
+                xdir = (int)((x/100.0)*127);
                 ydir = (int)((y/100.0)*127);
-//                xdir += 128;
+                xdir += 128;
                 ydir += 128;
 
 
@@ -196,16 +196,16 @@ public class MainActivity extends AppCompatActivity {
                 offset = (int)(offset * 100);
                 rot = (int)(offset * Math.cos((double)degrees));
 
-                xrot = (int)((x/100.0)*127);
+                xrot = (int)((rot/100.0)*127);
                 xrot += 128;
 
-                Log.d("JoystickRL", "deg: " + degrees + " off: " + offset);
+                Log.d("JoystickRL", "rot: " + rot + " xrot: " + xrot);
 
             }
 
             @Override
             public void onUp() {
-
+                xrot = 127;
                 Log.d("JoyStickOP", Connected+"onUp: x = " + x + ", y = " + y);
             }
         });
